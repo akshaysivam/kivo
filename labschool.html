@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lab Infrastructure</title>
+  <link rel="icon" type="image/png" href="assets/mainlogo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ----------------------------------------------
+       RESET & GLOBAL 
+    ------------------------------------------------ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #f9fafc;
+      color: #1e1e2f;
+      line-height: 1.5;
+    }
+
+    /* ---------- navbar (fully responsive) ---------- */
+    .navbar {
+      background: #ffffffdd;
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0.8rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+    .logo-link { display: flex; }
+    .logo { height: 60px; width: auto; max-width: 180px; object-fit: contain; } /* responsive logo */
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      font-weight: 500;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #2d3e50;
+      font-size: 1rem;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .nav-links a.active, .nav-links a:hover { color: #2563eb; }
+
+    /* ---------- hero - REDUCED SIZE + responsive ---------- */
+    .curriculum-hero {
+      position: relative;
+      min-height: 50vh;
+      background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 30%, rgba(37,99,235,0.2) 0%, transparent 60%);
+    }
+    .curriculum-hero-content {
+      position: relative;
+      z-index: 5;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .hero-text {
+      flex: 1 1 350px;
+    }
+    .hero-text h1 {
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      color: white;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .hero-text p {
+      font-size: clamp(0.95rem, 3vw, 1.1rem);
+      color: #cbd5e1;
+      max-width: 500px;
+      margin-top: 1rem;
+    }
+    .hero-robot {
+      flex: 1 1 300px;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 20px 30px -15px black;
+      aspect-ratio: 16 / 9;
+      background: #0f172a;
+    }
+    .robot-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ---------- WHY section ---------- */
+    .why-section {
+      background: #ffffff;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid #eef2f6;
+    }
+    .why-section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: #0b1e33;
+      margin-bottom: 1rem;
+    }
+    .why-section h2 span {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .why-section p {
+      max-width: 900px;
+      margin: 0 auto;
+      color: #475569;
+      font-size: clamp(0.95rem, 3vw, 1.1rem);
+    }
+
+    /* ---------- CURRICULUM section (form + video) ---------- */
+    .curriculum-section {
+      background: #f1f5f9;
+      padding: 3rem 1.5rem;
+    }
+    .curriculum-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      gap: 3rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .curriculum-form {
+      flex: 1 1 400px;
+      background: white;
+      border-radius: 2rem;
+      padding: 2rem;
+      box-shadow: 0 20px 35px -8px rgba(0,20,60,0.1);
+      border: 1px solid rgba(255,255,255,0.6);
+      transition: transform 0.25s ease, box-shadow 0.3s;
+    }
+    .curriculum-form:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 45px -8px rgba(37,99,235,0.2);
+    }
+    .curriculum-form h3 {
+      font-size: clamp(1.5rem, 4vw, 1.8rem);
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+    label {
+      font-weight: 600;
+      color: #1e293b;
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+    }
+    select, textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: #f8faff;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      font-size: 0.95rem;
+      color: #1e1e2f;
+      transition: 0.2s;
+    }
+    select:focus, textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .form-btn {
+      background: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      width: 100%;
+      margin-top: 0.8rem;
+    }
+    .form-btn:hover {
+      background: #2563eb;
+    }
+    .form-note {
+      margin-top: 1.2rem;
+      font-size: 0.75rem;
+      color: #64748b;
+      text-align: center;
+    }
+    #alreadySubmitted h3 {
+      color: #0f172a;
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+    }
+    #alreadySubmitted p {
+      color: #475569;
+      font-size: 0.95rem;
+    }
+    .next-steps {
+      background: #dbeafe;
+      padding: 1.2rem;
+      border-radius: 1.2rem;
+      margin-top: 1.5rem;
+      color: #1e3a8a;
+    }
+    .services-robot {
+      flex: 1 1 350px;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -10px #0f172a;
+      aspect-ratio: 16/9;
+      background: #0f172a;
+      width: 100%;
+    }
+    .services-robot-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ---------- footer responsive ---------- */
+    .site-footer {
+      background: #0b1a2a;
+      color: #cddbe9;
+      padding: 2.5rem 1.5rem 1rem;
+    }
+    .footer-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+    .footer-brand h3 { color: white; font-size: 1.8rem; }
+    .footer-block h4 { color: white; font-size: 1.1rem; margin-bottom: 1rem; }
+    .footer-block ul { list-style: none; }
+    .footer-block li { margin-bottom: 0.5rem; opacity: 0.8; font-size: 0.9rem; }
+    .email { color: #90b4f5; }
+    .footer-bottom { text-align: center; padding-top: 2rem; opacity: 0.7; font-size: 0.9rem; }
+
+    /* ---------- responsive breakpoints ---------- */
+    @media (max-width: 900px) {
+      .curriculum-hero-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+      }
+      .hero-text p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero-robot { width: 100%; max-width: 450px; }
+      .curriculum-container {
+        flex-direction: column;
+        gap: 2rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .nav-container {
+        justify-content: center;
+        padding: 0.6rem 1rem;
+      }
+      .nav-links {
+        justify-content: center;
+        gap: 1.2rem;
+      }
+      .logo { height: 50px; }
+      .hero-text h1 { font-size: 2rem; }
+      .why-section { padding: 2rem 1rem; }
+      .curriculum-section { padding: 2rem 1rem; }
+      .curriculum-form { padding: 1.5rem; }
+    }
+
+    @media (max-width: 400px) {
+      .nav-links a { font-size: 0.85rem; }
+      .nav-links { gap: 0.8rem; }
+    }
+
+    /* video fallback */
+    video { background: #1e293b; }
+  </style>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+  <div class="nav-container">
+    <a href="#" class="logo-link"><img src="assets/log3.PNG" class="logo" alt="KIVO" onerror="this.src='https://placehold.co/160x60?text=KIVO'"></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Overview</a></li>
+      <li><a href="curriculm.html">Online_Mentorship</a></li>
+      <li><a href="labschool.html" class="active">Lab Infrastructure</a></li>
+    </ul>
+  </div>
+</header>
+
+<!-- ================= HERO - REDUCED SIZE & RESPONSIVE ================= -->
+<section class="curriculum-hero">
+  <div class="overlay"></div>
+  <div class="curriculum-hero-content">
+    <div class="hero-text">
+      <h1>Designed,<br>Not Downloaded</h1>
+      <p>Every school is different. Our learning frameworks are shaped through deep analysis — not pre-built templates.</p>
+    </div>
+    <div class="hero-robot">
+      <video autoplay muted loop playsinline class="robot-video">
+        <source src="assets/rob.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHY SECTION ================= -->
+<section class="why-section">
+  <h2>Why <span>we don't offer ready‑made curriculum</span></h2>
+  <p>Effective robotics education cannot be copied and pasted. Learning environments, student maturity, and infrastructure vary significantly — which is why our approach begins with observation, not assumption.</p>
+</section>
+
+<!-- ================= FORM + ROBOT (fully responsive) ================= -->
+<section class="curriculum-section">
+  <div class="curriculum-container">
+    <!-- left: form card -->
+    <div class="curriculum-form">
+      <div id="formContainer">
+        <h3>Help us understand your environment</h3>
+        <form id="dataForm" action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSfU_9pVkvPaGpoVWGLGaprEy2hLFb7Mx2Vmfpub6iCYA6JU8w/formResponse" method="POST">
+          <!-- School Level -->
+          <div class="form-group">
+            <label>School Level</label>
+            <select name="entry.1723112924" required>
+              <option value="" disabled selected>Select level</option>
+              <option value="Primary">Primary</option>
+              <option value="Middle">Middle</option>
+              <option value="Secondary">Secondary</option>
+            </select>
+          </div>
+
+          <!-- Student Exposure to STEM -->
+          <div class="form-group">
+            <label>Student Exposure to STEM</label>
+            <select name="entry.1830583296" required>
+              <option value="" disabled selected>Select exposure</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+
+          <!-- Available Infrastructure -->
+          <div class="form-group">
+            <label>Available Infrastructure</label>
+            <textarea name="entry.1849183582" placeholder="Labs, devices, space, etc." required></textarea>
+          </div>
+
+          <!-- Hidden Google Form fields -->
+          <input type="hidden" name="fvv" value="1">
+          <input type="hidden" name="pageHistory" value="0">
+          <input type="hidden" name="fbzx" value="2450963483446887726">
+          <input type="hidden" name="submissionTimestamp" value="-1">
+
+          <button type="submit" class="form-btn" id="submitBtn">Submit Insights</button>
+        </form>
+      </div>
+
+      <!-- hidden thank you message -->
+      <div id="alreadySubmitted" style="display:none;">
+        <h3>✅ Form Submitted</h3>
+        <p style="margin: 15px 0;">Thank you! Your insights have already been recorded.</p>
+        <div class="next-steps">
+          <p>🔬 Next steps:</p>
+          <p style="margin:0;">Our team will analyze your environment and create a custom learning framework within 48 hours.</p>
+        </div>
+      </div>
+
+      <p class="form-note">* Information is used only for internal curriculum planning.</p>
+    </div>
+
+    <!-- right: robot video (responsive aspect) -->
+    <div class="services-robot">
+      <video autoplay muted loop playsinline class="services-robot-video">
+        <source src="assets/bot2.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-brand"><h3>KIVO</h3><p>Building next-generation STEM, AI & Robotics ecosystems for schools across GCC & India.</p></div>
+    <div class="footer-block"><h4>Solutions</h4><ul><li>STEM Curriculum</li><li>AI Learning Labs</li><li>Robotics R&D Labs</li><li>Faculty Enablement</li></ul></div>
+    <div class="footer-block"><h4>Markets</h4><ul><li>School Education</li><li>Universities</li><li>CSR Programs</li><li>Government Initiatives</li></ul></div>
+    <div class="footer-block footer-contact"><h4>Connect</h4><p>Oman • UAE • India </p><p class="email">info@kivo.com</p></div>
+  </div>
+  <div class="footer-bottom">© 2026 Kivo Robotics Research Lab. All rights reserved.</div>
+</footer>
+
+<script>
+  (function() {
+    // Video fallback
+    document.querySelectorAll('video').forEach(v => {
+      v.onerror = function() { this.style.background = '#1e293b'; };
+    });
+
+    // Form handling with localStorage
+    const formContainer = document.getElementById('formContainer');
+    const alreadySubmittedMsg = document.getElementById('alreadySubmitted');
+    const dataForm = document.getElementById('dataForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function updateUIBasedOnStorage() {
+      if (localStorage.getItem('formSubmitted') === 'true') {
+        if (formContainer) formContainer.style.display = 'none';
+        if (alreadySubmittedMsg) alreadySubmittedMsg.style.display = 'block';
+      } else {
+        if (formContainer) formContainer.style.display = 'block';
+        if (alreadySubmittedMsg) alreadySubmittedMsg.style.display = 'none';
+      }
+    }
+
+    window.addEventListener('load', function() {
+      updateUIBasedOnStorage();
+    });
+
+    if (dataForm) {
+      dataForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (localStorage.getItem('formSubmitted') === 'true') {
+          alert('You have already submitted the form.');
+          return;
+        }
+
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Submitting...';
+        submitBtn.disabled = true;
+
+        const formData = new FormData(dataForm);
+        
+        // Submit to Google Forms
+        fetch(dataForm.action, {
+          method: 'POST',
+          body: formData,
+          mode: 'no-cors'
+        })
+        .then(() => {
+          localStorage.setItem('formSubmitted', 'true');
+          updateUIBasedOnStorage();
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        })
+        .catch(err => {
+          alert('Error submitting. Please check your connection.');
+          console.error(err);
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        });
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

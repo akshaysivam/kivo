@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>KIVO</title>
+  <link rel="icon" type="image/png" href="assets/mainlogo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #f9fafc;
+      color: #1e1e2f;
+      line-height: 1.5;
+    }
+
+    /* ===== NAVBAR (fully responsive) ===== */
+    .navbar {
+      background: #ffffffdd;
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0.8rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+    .logo-link { display: flex; }
+    .logo { height: 60px; width: auto; max-width: 180px; object-fit: contain; }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      font-weight: 500;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #2d3e50;
+      font-size: 1rem;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .nav-links a.active, .nav-links a:hover { color: #2563eb; }
+
+    /* ===== HERO – refined robot video ===== */
+    .hero {
+      position: relative;
+      min-height: 600px;
+      background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 30%, rgba(37,99,235,0.2) 0%, transparent 60%);
+    }
+    .hero-body {
+      position: relative;
+      z-index: 5;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 2rem;
+    }
+    .hero-text {
+      flex: 1 1 400px;
+    }
+    .hero-text h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      color: white;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .hero-text p {
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      color: #cbd5e1;
+      max-width: 550px;
+      margin-top: 1.5rem;
+    }
+    /* robot video container – perfect proportions everywhere */
+    .hero-robot {
+      flex: 1 1 300px;
+      max-width: 550px;
+      width: 100%;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 30px 40px -20px black;
+      aspect-ratio: 16 / 9;  /* ensures consistent frame, video fills without distortion */
+      background: #0f172a;    /* fallback while loading */
+    }
+    .robot-video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;      /* covers area cleanly, no black bars, sharp on all screens */
+      object-position: center;
+    }
+
+    /* ===== TESTIMONIALS (infinite scroll, responsive cards) ===== */
+    .testimonial-section {
+      background: #ffffff;
+      padding: 4rem 1rem 5rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .section-title {
+      text-align: center;
+      font-size: clamp(2rem, 5vw, 2.5rem);
+      font-weight: 700;
+      color: #0b1e33;
+      margin-bottom: 3rem;
+      padding: 0 1rem;
+    }
+    .section-title span {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .testimonial-scroll {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 2rem;
+      animation: scrollTestimonials 30s linear infinite;
+      width: max-content;
+      padding: 1rem 0.5rem;
+    }
+    .testimonial-scroll:hover {
+      animation-play-state: paused;
+    }
+    .testimonial-card {
+      background: #f8faff;
+      border-radius: 2rem;
+      padding: 1.8rem 1.5rem 1.5rem;
+      box-shadow: 0 20px 35px -8px rgba(0,20,60,0.1);
+      border: 1px solid rgba(255,255,255,0.6);
+      width: min(320px, 85vw);
+      flex-shrink: 0;
+      transition: transform 0.25s ease, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .testimonial-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 45px -8px rgba(37,99,235,0.2);
+    }
+    .testimonial-card::before {
+      content: "⭐⭐⭐";
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 1.1rem;
+      letter-spacing: 3px;
+      opacity: 0.3;
+      color: #fbbf24;
+    }
+    .testimonial-avatars {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .avatar-group {
+      display: flex;
+      align-items: center;
+      margin-right: 1rem;
+    }
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #3b82f6, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+      border: 3px solid white;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    .avatar.student {
+      background: linear-gradient(145deg, #f97316, #facc15);
+      margin-left: -15px;
+      font-size: 1.4rem;
+    }
+    .testimonial-names { line-height: 1.3; }
+    .parent-name {
+      font-weight: 700;
+      color: #1e293b;
+      font-size: 1.1rem;
+    }
+    .student-name {
+      font-size: 0.85rem;
+      color: #4b5563;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .testimonial-quote {
+      font-size: 1rem;
+      color: #1f2a41;
+      margin: 1rem 0 0.8rem 0;
+      font-style: italic;
+      line-height: 1.5;
+      padding-left: 0.8rem;
+      border-left: 4px solid #3b82f6;
+    }
+    .testimonial-highlight {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 2px dashed #e2e8f0;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: #dbeafe;
+      color: #1e40af;
+      font-weight: 600;
+      padding: 0.2rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    @keyframes scrollTestimonials {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-320px * 4 - 2rem * 4)); }
+    }
+
+    /* ===== SERVICES (stack on mobile) ===== */
+    .services-section {
+      background: #f1f5f9;
+      padding: 4rem 1.5rem;
+    }
+    .services-header { text-align: center; margin-bottom: 3rem; }
+    .services-header h2 { font-size: clamp(2rem,5vw,2.5rem); color: #0f172a; }
+    .services-header p { color: #475569; }
+    .services-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      gap: 3rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .services-list { flex: 1 1 350px; }
+    .service-card {
+      background: white;
+      padding: 1.8rem;
+      border-radius: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 25px -8px rgba(0,0,0,0.1);
+    }
+    .service-card.active { border-left: 8px solid #2563eb; background: #ffffff; }
+    .service-card h3 { font-size: 1.7rem; margin-bottom: 0.5rem; }
+    .services-robot {
+      flex: 1 1 350px;
+      border-radius: 2rem;
+      overflow: hidden;
+      box-shadow: 0 30px 30px -15px #0f172a;
+      aspect-ratio: 16/9;
+      background: #0f172a;
+    }
+    .services-robot-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ===== LAB SECTION (responsive) ===== */
+    .lab-section {
+      background: linear-gradient(145deg, #0f2027, #1a2f3a);
+      color: white;
+      padding: 4rem 1.5rem;
+    }
+    .lab-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 3rem;
+    }
+    .lab-content {
+      flex: 1 1 400px;
+    }
+    .lab-content h2 {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #a5f3fc, #bae6fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+    .lab-content p {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      color: #cbd5e1;
+      max-width: 550px;
+    }
+    .lab-stats {
+      display: flex;
+      gap: 2rem;
+      margin: 2rem 0 1.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-item h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+    /* accreditation logos (flex wrap always visible) */
+    .accreditation-logos {
+      display: flex;
+      gap: 2rem 3rem;
+      align-items: center;
+      margin: 1.5rem 0;
+      background: rgba(255,255,255,0.05);
+      padding: 1.5rem 2rem;
+      border-radius: 60px;
+      backdrop-filter: blur(4px);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .logo-icon-item {
+      text-align: center;
+      min-width: 80px;
+    }
+    .logo-icon-item i {
+      color: #ffffff;
+      font-size: 2.5rem;
+      opacity: 0.9;
+      transition: 0.2s;
+    }
+    .logo-icon-item span {
+      display: block;
+      color: white;
+      font-weight: 600;
+      margin-top: 0.3rem;
+      font-size: 0.95rem;
+    }
+    .lab-illustration {
+      flex: 1 1 250px;
+      text-align: center;
+    }
+    .lab-illustration i {
+      font-size: 10rem;
+      color: #2dd4bf;
+      opacity: 0.7;
+    }
+
+    /* ===== RESOURCES (scrolling logos responsive) ===== */
+    .resources-section {
+      background: #ffffff;
+      padding: 3rem 1rem;
+      overflow: hidden;
+      border-top: 1px solid #eef2f6;
+      border-bottom: 1px solid #eef2f6;
+    }
+    .resources-title {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2rem);
+      font-weight: 600;
+      color: #0b1e33;
+      margin-bottom: 2.5rem;
+    }
+    .resources-title i { color: #2563eb; margin-right: 8px; }
+    .resource-scroll-track {
+      display: flex;
+      gap: 3rem;
+      animation: scrollResources 25s linear infinite;
+      width: max-content;
+      padding: 0.5rem 0;
+    }
+    .resource-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #2c3e50;
+      min-width: 100px;
+    }
+    .resource-item i {
+      font-size: 2.5rem;
+      color: #2563eb;
+    }
+    .resource-item span { white-space: nowrap; }
+    .resource-scroll-track:hover { animation-play-state: paused; }
+    @keyframes scrollResources {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-180px * 6 - 3rem * 6)); }
+    }
+
+    /* ===== FOOTER responsive ===== */
+    .site-footer {
+      background: #0b1a2a;
+      color: #cddbe9;
+      padding: 3rem 1.5rem 1rem;
+    }
+    .footer-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2.5rem;
+    }
+    .footer-brand h3 { color: white; font-size: 2rem; }
+    .footer-block h4 { color: white; margin-bottom: 1rem; }
+    .footer-block ul { list-style: none; }
+    .footer-block li { margin-bottom: 0.6rem; opacity: 0.8; }
+    .email { color: #90b4f5; }
+    .footer-bottom { text-align: center; padding-top: 2.5rem; opacity: 0.7; }
+
+    /* ===== responsive tweaks ===== */
+    @media (max-width: 800px) {
+      .nav-container {
+        justify-content: center;
+        padding: 0.8rem 1rem;
+      }
+      .nav-links {
+        justify-content: center;
+        gap: 1.2rem;
+      }
+      .hero-body {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1rem;
+      }
+      .hero-text p { margin-left: auto; margin-right: auto; }
+      .hero-robot { width: 100%; max-width: 500px; } /* even on mobile it keeps nice size */
+      .testimonial-card { width: 280px; }
+      .accreditation-logos { border-radius: 30px; padding: 1.2rem; }
+    }
+
+    @media (max-width: 500px) {
+      .nav-links { gap: 0.8rem; }
+      .nav-links a { font-size: 0.9rem; }
+      .logo { height: 45px; }
+      .service-card h3 { font-size: 1.4rem; }
+      .lab-illustration i { font-size: 7rem; }
+      .resource-item { min-width: 70px; }
+      .resource-item i { font-size: 2rem; }
+    }
+
+    /* video fallback */
+    video { background: #1e293b; }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="nav-container">
+    <a href="#" class="logo-link"><img src="assets/log3.PNG" class="logo" alt="KIVO" onerror="this.src='https://placehold.co/160x60?text=KIVO'"></a>
+    <ul class="nav-links">
+      <li><a class="active" href="#">Overview</a></li>
+      <li><a href="curriculm.html">Online_Mentorship</a></li>
+      <li><a href="labschool.html">Lab Infrastructure</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="overlay"></div>
+  <div class="hero-body">
+    <div class="hero-text">
+      <h1>The World’s First<br>Research-Led Learning Startup</h1>
+      <p>An IITian-initiated startup building research-led STEM learning environments.</p>
+    </div>
+    <div class="hero-robot">
+      <!-- video now scales with aspect-ratio & object-fit: cover → always crisp, no distortion -->
+      <video autoplay muted loop playsinline class="robot-video">
+        <source src="assets/bot3.mp4" type="video/mp4">
+        <!-- fallback background if video missing -->
+      </video>
+    </div>
+  </div>
+</section>
+
+<!-- SCROLLING TESTIMONIALS -->
+<section class="testimonial-section">
+  <h2 class="section-title">Happy <span>parents & students</span> ❤️</h2>
+  <div class="testimonial-scroll">
+    <!-- card 1 -->
+    <div class="testimonial-card">
+      <div class="testimonial-avatars">
+        <div class="avatar-group"><div class="avatar">👩</div><div class="avatar student">🧒</div></div>
+        <div class="testimonial-names"><div class="parent-name">Fatma & Liam</div><div class="student-name"><i class="fas fa-star" style="color:#fbbf24;"></i> age 9</div></div>
+      </div>
+      <div class="testimonial-quote">“Liam used to spend hours on games, now he’s building his own robot. Priceless!”</div>
+      <div class="testimonial-highlight"><span class="badge"><i class="fas fa-robot"></i> KIVO starter</span><span class="badge">❤️ 3 weeks</span></div>
+    </div>
+    <!-- card 2 -->
+    <div class="testimonial-card">
+      <div class="testimonial-avatars">
+        <div class="avatar-group"><div class="avatar">👨</div><div class="avatar student">👦</div></div>
+        <div class="testimonial-names"><div class="parent-name">Ahmed & Zayn</div><div class="student-name"><i class="fas fa-bolt" style="color:#f97316;"></i> age 12</div></div>
+      </div>
+      <div class="testimonial-quote">“Zayn designed his first AI model. He keeps saying ‘Dad, I want to be an engineer’.”</div>
+      <div class="testimonial-highlight"><span class="badge"><i class="fas fa-code"></i> AI junior</span><span class="badge"><i class="fas fa-trophy"></i> finalist</span></div>
+    </div>
+    <!-- card 4 -->
+    <div class="testimonial-card">
+      <div class="testimonial-avatars">
+        <div class="avatar-group"><div class="avatar">👩</div><div class="avatar student">👦</div><div class="avatar student" style="margin-left:-12px;">👦</div></div>
+        <div class="testimonial-names"><div class="parent-name">Nadia & twins</div><div class="student-name"><i class="fas fa-rocket"></i> both age 7</div></div>
+      </div>
+      <div class="testimonial-quote">“They argue over who gets to code first! Step-by-step videos make it easy.”</div>
+      <div class="testimonial-highlight"><span class="badge"><i class="fas fa-cubes"></i> STEM duo</span><span class="badge">⭐ 5 classes</span></div>
+    </div>
+    <!-- duplicate for seamless loop -->
+    <div class="testimonial-card" aria-hidden="true">
+      <div class="testimonial-avatars"><div class="avatar-group"><div class="avatar">👩</div><div class="avatar student">🧒</div></div><div class="testimonial-names"><div class="parent-name">Fatma & Liam</div><div class="student-name">age 9</div></div></div>
+      <div class="testimonial-quote">“Liam used to spend hours on games, now he’s building his own robot.”</div>
+      <div class="testimonial-highlight"><span class="badge">KIVO starter</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section">
+  <div class="services-header"><h2>Our Services</h2><p>Building future-ready skills through STEM, Robotics & AI</p></div>
+  <div class="services-container">
+    <div class="services-list">
+      <div class="service-card active"><h3>STEM Learning</h3><p>Hands-on science, engineering and design thinking programs built for school students.</p></div>
+      <div class="service-card"><h3>Robotics Labs</h3><p>End-to-end robotics lab setup with curriculum-aligned projects and real hardware.</p></div>
+      <div class="service-card"><h3>AI & Coding</h3><p>Future-ready AI, coding and automation programs designed for progressive learning.</p></div>
+    </div>
+    <div class="services-robot">
+      <video autoplay muted loop playsinline class="services-robot-video"><source src="assets/bot2.mp4" type="video/mp4"></video>
+    </div>
+  </div>
+</section>
+
+<!-- LAB SERVICES + IB, IGCSE, CBSE LOGOS (icons, always visible) -->
+<section class="lab-section">
+  <div class="lab-container">
+    <div class="lab-content">
+      <h2>KIVO Lab Services</h2>
+      <p>Fully equipped AI & robotics labs for schools, with curriculum integration and teacher training.</p>
+      <!-- Accreditation logos with FontAwesome icons -->
+      <div class="accreditation-logos">
+        <div class="logo-icon-item"><i class="fas fa-globe"></i><span>IB</span></div>
+        <div class="logo-icon-item"><i class="fas fa-certificate"></i><span>IGCSE</span></div>
+        <div class="logo-icon-item"><i class="fas fa-university"></i><span>CBSE</span></div>
+      </div>
+      <p style="margin-top:1rem; color:#9ca3af;"><i class="fas fa-check-circle" style="color:#10b981;"></i> Aligned with international standards</p>
+    </div>
+    <div class="lab-illustration">
+      <i class="fas fa-flask"></i>
+    </div>
+  </div>
+</section>
+
+<!-- SCROLLING RESOURCES (tools) -->
+<section class="resources-section">
+  <div class="resources-title"><i class="fas fa-tools"></i> Tools we teach with</div>
+  <div class="resource-scroll-track">
+    <div class="resource-item"><i class="fas fa-microchip"></i><span>Arduino IDE</span></div>
+    <div class="resource-item"><i class="fas fa-cube"></i><span>Tinkercad</span></div>
+    <div class="resource-item"><i class="fab fa-python"></i><span>Python</span></div>
+    <div class="resource-item"><i class="fas fa-robot"></i><span>ROS</span></div>
+    <div class="resource-item"><i class="fas fa-project-diagram"></i><span>Scratch</span></div>
+    <div class="resource-item"><i class="fas fa-chart-line"></i><span>TensorFlow</span></div>
+    <div class="resource-item"><i class="fas fa-code"></i><span>VS Code</span></div>
+    <!-- duplicates for seamless loop -->
+    <div class="resource-item"><i class="fas fa-microchip"></i><span>Arduino IDE</span></div>
+    <div class="resource-item"><i class="fas fa-cube"></i><span>Tinkercad</span></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-brand"><h3>KIVO</h3><p>Building next-generation STEM, AI & Robotics ecosystems for schools across GCC & India.</p></div>
+    <div class="footer-block"><h4>Solutions</h4><ul><li>STEM Curriculum</li><li>AI Learning Labs</li><li>Robotics R&D Labs</li><li>Faculty Enablement</li></ul></div>
+    <div class="footer-block"><h4>Markets</h4><ul><li>School Education</li><li>Universities</li><li>CSR Programs</li><li>Government Initiatives</li></ul></div>
+    <div class="footer-block footer-contact"><h4>Connect</h4><p>Oman • UAE • India </p><p class="email">info@kivo.com</p></div>
+  </div>
+  <div class="footer-bottom">© 2026 Kivo Robotics Research Lab. All rights reserved.</div>
+</footer>
+
+<script>
+  document.querySelectorAll('video').forEach(v => { v.onerror = function() { this.style.background = '#1e293b'; }; });
+</script>
+</body>
+</html>
